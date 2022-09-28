@@ -7,8 +7,16 @@ const POLL_ADRRESS = '255.255.255.255';
 
 class AdvatekV2 extends EventEmitter {
 
-    constructor() {
+    constructor(config) {
         super();
+
+        this.pollAddress = POLL_ADRRESS;
+
+        if(config != undefined){
+            if(config.pollAddress != undefined){
+                this.pollAddress = config.pollAddress;
+            }
+        }
 
         this.udp = require('dgram').createSocket('udp4');
 
@@ -34,7 +42,7 @@ class AdvatekV2 extends EventEmitter {
 
         let packet = AdvatekV2.packetPrefix(AdvatekV2.opCode("OpPoll"));
 
-        this.udp.send(packet, 0, packet.length, PORT, POLL_ADRRESS, (err) => {
+        this.udp.send(packet, 0, packet.length, PORT, this.pollAddress, (err) => {
             if (err) console.log(err);
         });
     }
